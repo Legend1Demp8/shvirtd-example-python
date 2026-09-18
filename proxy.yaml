@@ -21,6 +21,7 @@ services:
 
 networks:
   backend:
+    name: netology-backend
     driver: bridge
     ipam:
      config:
