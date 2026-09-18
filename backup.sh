@@ -13,20 +13,12 @@ else
     exit 1
 fi
 
-DB_HOST="db"
-DB_NAME="$MYSQL_DATABASE"
-DB_USER="$MYSQL_USER"
-DB_PASSWORD="$MYSQL_PASSWORD"
-
 sudo mkdir -p "$BACKUP_DIR"
 
-sudo docker run --rm \
+sudo docker run \
+  --rm \
+  --entrypoint "" \
   --network netology-backend \
   -v "$BACKUP_DIR":/backup \
-  -e MYSQL_HOST="db" \
-  -e MYSQL_DATABASE="$MYSQL_DATABASE" \
-  -e MYSQL_USER="$MYSQL_USER" \
-  -e MYSQL_PASSWORD="$MYSQL_PASSWORD" \
-  schnitzler/mysqldump \
-  mysqldump --mock-arg > "$BACKUP_DIR/$BACKUP_FILE"
-
+  mysql:8.0 \
+  mysqldump --opt -h "db" -u "root" -p"$MYSQL_ROOT_PASSWORD" --result-file="/backup/$BACKUP_FILE" "$MYSQL_DATABASE"
