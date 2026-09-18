@@ -1,0 +1,33 @@
+include:
+  - proxy.yaml
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.20.0.10
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    restart: always
+    depends_on:
+      - db
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5
+    environment:
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_HOST=db # 172.20.0.10
+      - DB_TABLE_NAME=${MYSQL_TABLE_NAME}
